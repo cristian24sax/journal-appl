@@ -1,10 +1,11 @@
 import React from 'react'
 import {
-    Routes,
-    Route,
-  } from "react-router-dom";
-import { LoginScreen } from '../components/auth/LoginScreen';
-import { RegisterScreen } from '../components/auth/RegisterScreen';
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { LoginScreen,RegisterScreen, } from '../pages';
+
 export const AuthRouter = () => {
  
  return (
@@ -13,7 +14,7 @@ export const AuthRouter = () => {
           <Routes> 
               <Route path='/login' element={<LoginScreen/>}/>
               <Route path='/register' element={<RegisterScreen/>}/>
-              <Route path='*' element ={'no Found'}/>
+              <Route path='/*' element ={<Navigate to ='/auth/login'/>}/>
           </Routes>
           
         </div>

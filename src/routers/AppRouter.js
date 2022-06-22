@@ -4,14 +4,14 @@ import {
     Routes,
     Route,
   } from "react-router-dom";
-import { JournalScreen } from '../components/journal/JournalScreen';
-import { AuthRouter } from './AuthRouter';
+import { AuthRouter } from '../components/auth/routes/AuthRouter';
+import { JournalRoutes } from '../components/journal/routes/JournalRoutes';
 
 export const AppRouter = () => {
   return (
     <Router> 
         <Routes>
-            <Route path='/' element={<JournalScreen/>}/>
+            <Route path='/*' element={<JournalRoutes/>}/>
             <Route path='auth/*' element={<AuthRouter/>}/>
         </Routes>
     </Router>
