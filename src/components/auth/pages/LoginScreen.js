@@ -1,34 +1,38 @@
-import React from 'react'
-import { useDispatch } from 'react-redux'
+import React,{useMemo} from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {Link as RouterLink } from 'react-router-dom'
-import { startGoogleLogin, startLoginEmailPassword } from '../../../actions/auth'
-import { useForm } from '../../../hooks/useForm'
+import {useForm} from '../../../hooks'
+// import { startGoogleLogin, startLoginEmailPassword } from '../../../actions/auth'
 import GoogleIcon from '@mui/icons-material/Google';
 import {Grid,Button,TextField,Link,Typography} from '@mui/material'
 import { AuthLayout } from '../layout/AuthLayout'
+import {checkingAuthentication,startGoogleSignIn} from '../../../store/auth'
+
 
 export const LoginScreen = () => {
-  // const dispatch = useDispatch()
-  // const[values,handleInputChange] = useForm({
-  //   email:'cristian@cristian.com',
-  //   password:'123456'
-
-
-  // })
-  // const { email , password} = values
-  // const handleLogin=(e)=>{
-  //   e.preventDefault()
-  //   console.log(email,password)
-  //   dispatch(startLoginEmailPassword(password,email))
-  // }
-  // const handleLoginGoogle=()=>{
-  //   dispatch(startGoogleLogin())
-  // }
+  const dispatch = useDispatch()
+  const {status} = useSelector(state=> state.auth)
+  console.log(status)
+  const isAuthenticating = useMemo(()=> status === 'checking',[status])
+  const[values,handleInputChange] = useForm({
+    email:'cristian@cristian.com',
+    password:'123456'
+  })
+  const { email , password} = values
+  const handleLogin=(e)=>{
+    e.preventDefault()
+    console.log(email,password)
+    // dispatch(startLoginEmailPassword(password,email))
+    dispatch(checkingAuthentication(email,password))
+  }
+  const handleLoginGoogle=()=>{
+    dispatch(startGoogleSignIn())
+  }
  
   return (
 
     <AuthLayout title={'Login'}>
-            <form>
+            <form onSubmit={handleLogin}>
               <Grid container
                 // direction='column'
                 >
@@ -40,6 +44,9 @@ export const LoginScreen = () => {
                     label='Correo' 
                     type='email'
                     placeholder='correo@correo.com'
+                    name='email'
+                    value={email}
+                    onChange={handleInputChange}
                     fullWidth
                     /> 
                 </Grid>
@@ -49,18 +56,21 @@ export const LoginScreen = () => {
                   <TextField 
                     label='Contrasena' 
                     type='password'
+                    value={password}
+                    name='password'
+                    onChange={handleInputChange}
                     placeholder='contrasena'
                     fullWidth
                     /> 
                 </Grid>
                 <Grid container spacing={2} sx={{mb:2, mt:1}}>
                     <Grid item xs={12} sm={6}  >
-                      <Button variant='contained' fullWidth>
+                      <Button disabled={isAuthenticating}  type='submit' variant='contained' fullWidth>
                         <Typography>Login</Typography>
                       </Button>  
                     </Grid>  
                     <Grid item xs={12} sm={6}  >
-                      <Button variant='contained' fullWidth>
+                      <Button disabled={isAuthenticating} variant='contained' fullWidth onClick={handleLoginGoogle}>
                         <GoogleIcon/>
                         <Typography>Google</Typography>
                       </Button>  
