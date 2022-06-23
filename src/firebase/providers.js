@@ -1,14 +1,11 @@
 
 import { googleAuth } from "./firebase-config";
-import {  signInWithPopup,createUserWithEmailAndPassword,updateProfile, GoogleAuthProvider} from "firebase/auth";
+import {  signInWithPopup,createUserWithEmailAndPassword,updateProfile, GoogleAuthProvider,signInWithEmailAndPassword} from "firebase/auth";
 const googleProvider = new GoogleAuthProvider()
 export const signInWithGoogle = async()=>{
     try{
         const result = await signInWithPopup(googleAuth,googleProvider)
-        // const credentials = GoogleAuthProvider.credentialFromResult(result)
-        // console.log({credentials})
         const {uid,displayName,photoURL,email} = result.user
-        // console.log(user)
         return {
             ok:true,
             uid,displayName,photoURL,email
@@ -17,28 +14,58 @@ export const signInWithGoogle = async()=>{
     }catch(error){
 
         const errorCode = error.code
-        // const errorMessage = error.Message
+        const errorMessage = error.message
         return{
             ok:false,
             errorCode,
-
+            errorMessage
         }
     }
 }
 
-export const startRegisterWithEmailPasswordName = (email,password,name)=>{
-    return(dispatch)=>{
-        createUserWithEmailAndPassword(googleAuth,email,password)
-        .then(({user}) => {
-            updateProfile(googleAuth.currentUser,{
-                displayName:name
-            })
-           
-            console.log(user)
-            // dispatch(login(user.uid,name))
-        })
-        .catch(e=>{
-            console.log(e)
-        })
+export const registerUserWithEmailPasswordName = async({email,password,displayName})=>{
+    try{
+        // console.log({email,password,displayName})
+       const resp = await createUserWithEmailAndPassword(googleAuth,email,password);
+       const {uid,photoURL} = resp.user
+    //    console.log(resp.user)
+        await updateProfile(googleAuth.currentUser,{displayName})
+        return {
+            ok:'true',
+            uid,
+            photoURL,
+            email,
+            password,
+            displayName
+        }
+    }catch(error){
+        const errorMessage= error.message
+        return{
+            ok:'false',
+            errorMessage,
+        }
+    }
+}
+
+export const loginWithEmailPassword=async({email,password})=>{
+    try{
+        const resp = await signInWithEmailAndPassword(googleAuth, email, password)
+        // console.log(resp.user)
+        const{displayName,uid,photoURL} = resp.user
+        return{
+            ok:'true',
+            displayName,uid,email,password,photoURL
+        }
+
+    }
+    catch(error){
+        console.log(error)
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        return {
+            ok:'false',
+            errorCode,
+            errorMessage
+        }
     }
 }

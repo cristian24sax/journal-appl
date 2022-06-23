@@ -6,7 +6,7 @@ import {useForm} from '../../../hooks'
 import GoogleIcon from '@mui/icons-material/Google';
 import {Grid,Button,TextField,Link,Typography} from '@mui/material'
 import { AuthLayout } from '../layout/AuthLayout'
-import {checkingAuthentication,startGoogleSignIn} from '../../../store/auth'
+import {checkingAuthentication,startGoogleSignIn,startLoginWithEmailPassword} from '../../../store/auth'
 
 
 export const LoginScreen = () => {
@@ -16,7 +16,7 @@ export const LoginScreen = () => {
   const isAuthenticating = useMemo(()=> status === 'checking',[status])
   const{formState,handleInputChange}= useForm({
     email:'cristian@cristian.com',
-    password:'123456'
+    password:'123123'
   })
   const { email , password} = formState
   const handleLogin=(e)=>{
@@ -24,6 +24,7 @@ export const LoginScreen = () => {
     console.log(email,password)
     // dispatch(startLoginEmailPassword(password,email))
     dispatch(checkingAuthentication(email,password))
+    dispatch(startLoginWithEmailPassword(email,password))
   }
   const handleLoginGoogle=()=>{
     dispatch(startGoogleSignIn())
