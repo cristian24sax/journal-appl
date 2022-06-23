@@ -14,11 +14,11 @@ export const LoginScreen = () => {
   const {status} = useSelector(state=> state.auth)
   console.log(status)
   const isAuthenticating = useMemo(()=> status === 'checking',[status])
-  const[values,handleInputChange] = useForm({
+  const{formState,handleInputChange}= useForm({
     email:'cristian@cristian.com',
     password:'123456'
   })
-  const { email , password} = values
+  const { email , password} = formState
   const handleLogin=(e)=>{
     e.preventDefault()
     console.log(email,password)

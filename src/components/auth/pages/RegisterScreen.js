@@ -1,60 +1,34 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link as RouterLink} from 'react-router-dom'
-// import { useForm } from '../../../hooks/useForm'
-// import  validator from 'validator'
-// import { useDispatch, useSelector } from 'react-redux'
-// import { removeError, setError } from '../../../actions/ui'
-// import { startRegisterWithEmailPasswordName } from '../../../actions/auth'
+
 import { AuthLayout } from '../layout/AuthLayout'
 import {Grid,Button,TextField,Link,Typography} from '@mui/material'
+import { useForm } from '../../../hooks'
 export const RegisterScreen = () => {
-  /*
-  
-    { name: 'cristian'
-      email:''
-      password:''
-      password:''
-    }  
-  */
-  // const {msgError} = useSelector(state => state.ui)
-  // // console.log(state.ui.msgError)
-  // const dispatch = useDispatch()
-  // const [values, handleInputChange]= useForm({
-  //   name:'',
-  //   email:'cristian@gmail.com',
-  //   password:'123456',
-  //   password2:'123456'
-  // })
-  // const {name,email,password,password2} = values
-  // const handleRegister = e =>{
-  //   e.preventDefault()
-  //   if( isFormValid()){
-  //     // console.log('formulario correcto')
-      
-  //     dispatch(startRegisterWithEmailPasswordName(email,password,name))
-  
-  //   }
-  // }
-  // const isFormValid=()=>{
-  //   if(name.trim().length === 0){
-  //     dispatch(setError('name is required'))
-  //     return false
-  //   }
-  //   else if( !validator.isEmail(email)){
-  //     dispatch(setError('email is not valid'))
-  //     return false
-  //   }
-  //   else if( password !==password2 || password.length < 5){
-  //     dispatch(setError('password should be at least 6 characters '))
-  //     return false
-  //   }
-  //   dispatch(removeError())
-  //   return true
-  // }
+  const formData={
+    email:'cristian@cristian.com',
+    password:'',
+    displayName:'cristian'
+  }
+  const formValidations={
+    email:[value=> value.includes('@'),'El correo debe tener una @'],
+    password:[value=>value.length>=6,'El password debe tener al menos 6 caracteres'],
+    displayName:[value=>value.length>=2,'El nombre de tener al menos 2 caracteres']
+  }
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const { displayName,email,password,handleInputChange,formState,
+          displayNameValid,emailValid,passwordValid,isFormValid
+        } = useForm(formData,formValidations)
+  console.log(displayNameValid)
+  const onSubmit=(e)=>{
+    e.preventDefault()
+    setFormSubmitted(true)
+    console.log(formState)
+  }
   return (
-
     <AuthLayout title={'Register'}>
-            <form>
+            <h1> {isFormValid?'true':'false'}</h1>
+            <form onSubmit={onSubmit}>
               <Grid container>
                 <Grid item
                 xs={12} sx={{mt:2}}
@@ -62,8 +36,13 @@ export const RegisterScreen = () => {
                   <TextField 
                     label='Nombre' 
                     type='text'
+                    value={displayName}
+                    name='displayName'
                     placeholder='Ingrese su Nombre'
                     fullWidth
+                    error={!!displayNameValid && formSubmitted}
+                    helperText={displayNameValid}
+                    onChange={handleInputChange}
                     /> 
                 </Grid>
                 <Grid item
@@ -72,8 +51,13 @@ export const RegisterScreen = () => {
                   <TextField 
                     label='Correo' 
                     type='email'
+                    value={email}
+                    name='email'
                     placeholder='correo@correo.com'
                     fullWidth
+                    error={!!emailValid && formSubmitted}
+                    helperText={emailValid}
+                    onChange={handleInputChange}
                     /> 
                 </Grid>
                 <Grid 
@@ -82,13 +66,18 @@ export const RegisterScreen = () => {
                   <TextField 
                     label='Contrasena' 
                     type='password'
+                    name='password'
+                    value={password}
                     placeholder='contrasena'
+                    error={!!passwordValid && formSubmitted}
+                    helperText={passwordValid}
+                    onChange={handleInputChange}
                     fullWidth
                     /> 
                 </Grid>
                 <Grid container spacing={2} sx={{mb:2, mt:1}}>
                     <Grid item xs={12} sm={6}  >
-                      <Button variant='contained' fullWidth>
+                      <Button type='submit' variant='contained' fullWidth>
                         <Typography>Crear Cuenta</Typography>
                       </Button>  
                     </Grid>  
