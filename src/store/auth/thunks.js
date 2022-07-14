@@ -1,5 +1,6 @@
 import {checkingCredentials,logout,login} from './authSlice'
-import {signInWithGoogle,registerUserWithEmailPasswordName,loginWithEmailPassword} from '../../firebase/providers'
+import {signInWithGoogle,registerUserWithEmailPasswordName,loginWithEmailPassword, logoutFirebase} from '../../firebase/providers'
+import { async } from '@firebase/util'
 
 export const checkingAuthentication= (email,password)=>{
     return async(dispatch)=>{
@@ -31,9 +32,29 @@ export const startCreatingUserWithEmailPassword = ({displayName,email,password})
 export const startLoginWithEmailPassword=(email,password)=>{
     return async(dispatch)=>{
         dispatch(checkingCredentials())
-        const {ok,uid,displayName,photoURL,errorMessage} = await loginWithEmailPassword({email,password})
+        const result = await loginWithEmailPassword({email,password})
         // console.log(result)
-        if(!ok) return dispatch(logout(errorMessage))
-        dispatch(login({uid,displayName,photoURL,email}))
+        if(!result.ok) return dispatch(logout(result))
+        dispatch(login(result))
+    }
+}
+
+export const  startLogout =()=>{
+    return async(dispatch)=>{
+        await logoutFirebase()
+        dispatch(logout({}))
+    }
+}
+
+export  const  startSaveNote = ()=>{
+    return async (dispatch,getState)=>{
+        const {uid} =getState().auth
+        const {active:note} = getState().journal
+
+        const noteToFireStore = {...note}
+        delete noteToFireStore.id
+
+        console.log(noteToFireStore)
+
     }
 }

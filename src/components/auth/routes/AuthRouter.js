@@ -4,10 +4,10 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+
 import { LoginScreen,RegisterScreen, } from '../pages';
 
 export const AuthRouter = () => {
- 
  return (
 <div className='auth__main'>  
         <div className='auth__box-container'>

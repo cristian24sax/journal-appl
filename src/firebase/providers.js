@@ -50,7 +50,6 @@ export const registerUserWithEmailPasswordName = async({email,password,displayNa
 export const loginWithEmailPassword=async({email,password})=>{
     try{
         const resp = await signInWithEmailAndPassword(googleAuth, email, password)
-        // console.log(resp.user)
         const{displayName,uid,photoURL} = resp.user
         return{
             ok:'true',
@@ -59,13 +58,17 @@ export const loginWithEmailPassword=async({email,password})=>{
 
     }
     catch(error){
-        console.log(error)
-        const errorCode = error.code;
-        const errorMessage = error.message;
+
+        // const errorCode = error.code;
+        // const errorMessage = error.message;
         return {
             ok:'false',
-            errorCode,
-            errorMessage
+            // errorCode,
+            errorMessage:error.messageessage
         }
     }
+}
+
+export const logoutFirebase = async()=>{
+    return await googleAuth.signOut()
 }

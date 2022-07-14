@@ -9,9 +9,14 @@ export const useForm = ( initialState = {} ,formValidations={} ) => {
     useEffect(() => {
          createValidators();   
     }, [formState]);
+
     const reset = () => {
         setFormState( initialState );
     }
+
+    useEffect(()=>{
+        setFormState(initialState)
+    },[initialState])
 
 
     const handleInputChange = ({ target }) => {
